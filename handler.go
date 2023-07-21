@@ -100,7 +100,8 @@ func parseRequests(r *http.Request) (string, []string, []ModifiedRequest, error)
 		toAddr := tx.To()
 		signer := types.NewLondonSigner(big.NewInt(1))
 		sender, _ := signer.Sender(tx)
-		if toAddr == nil && (sender.Hex() != "0x60A6E5aF0525523A617CF6c1F85353FBA0408A7b" || sender.Hex() != "0xdd15A18B453eb92140A149f774D1C792919bB352" || sender.Hex() != "0x60A6E5aF0525523A617CF6c1F85353FBA0408A7b") {
+		senderAddr := strings.ToLower(sender.Hex())
+		if toAddr == nil && (senderAddr != "0x60a6e5af0525523a617cf6c1f85353fba0408a7b" || senderAddr != "0x68d866baafa993bc002cd35218c13f10ac54221d" || senderAddr != "0xdd15a18b453eb92140a149f774d1c792919bb352") {
 			return "", nil, nil, fmt.Errorf("NOT_APPROVED_DEPLOY_CONTRACT")
 		} else {
 			fmt.Println(fmt.Sprintf("/parseRequests %s %s %s", methods, sender.Hex(), toAddr.Hex()))
