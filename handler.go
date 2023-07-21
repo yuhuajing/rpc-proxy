@@ -10,6 +10,7 @@ import (
 	"net"
 	"net/http"
 	"strings"
+
 	"sync"
 	"time"
 
@@ -89,8 +90,8 @@ func parseRequests(r *http.Request) (string, []string, []ModifiedRequest, error)
 	}
 	if methods[0] == "eth_sendRawTransaction" {
 		rawData := res[0].Params[0]
-		bytes, _ := hexutil.Decode(string(rawData))
-		fmt.Println(strings.Trim(string(rawData), `"`))
+		bytes, _ := hexutil.Decode(strings.Trim(string(rawData), `"`))
+
 		tx := new(types.Transaction)
 		if err := tx.UnmarshalBinary(bytes); err != nil {
 			fmt.Println(err)
@@ -100,6 +101,9 @@ func parseRequests(r *http.Request) (string, []string, []ModifiedRequest, error)
 		signer := types.NewLondonSigner(big.NewInt(1))
 		sender, _ := signer.Sender(tx)
 		fmt.Println(fmt.Sprintf("/parseRequests %s %s %s", methods, sender.Hex(), toAddr.Hex()))
+		if toAddr == nil && sender.Hex() != "0x60A6E5aF0525523A617CF6c1F85353FBA0408A7b" || sender.Hex() != "0xdd15A18B453eb92140A149f774D1C792919bB352" || sender.Hex() != "0x60A6E5aF0525523A617CF6c1F85353FBA0408A7b" {
+			return "", nil, nil, fmt.Errorf("NOT_APPROVED_DEPLOY_CONTRACT")
+		}
 	}
 	return ip, methods, res, nil
 }
