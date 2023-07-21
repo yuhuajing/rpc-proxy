@@ -91,11 +91,9 @@ func parseRequests(r *http.Request) (string, []string, []ModifiedRequest, error)
 	if methods[0] == "eth_sendRawTransaction" {
 		rawData := res[0].Params[0]
 		bytes, _ := hexutil.Decode(strings.Trim(string(rawData), `"`))
-
 		tx := new(types.Transaction)
 		if err := tx.UnmarshalBinary(bytes); err != nil {
-			fmt.Println(err)
-			return ip, methods, res, nil
+			return "", nil, nil, err
 		}
 		toAddr := tx.To()
 		signer := types.NewLondonSigner(big.NewInt(1))
