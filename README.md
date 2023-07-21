@@ -58,3 +58,10 @@ Run it:
 ```sh
 make run
 ```
+
+## Windows编译
+
+set CGO_ENABLED=0
+set GOOS=linux
+set GOARCH=amd64
+go build -ldflags "-s -w" -o ./rpc-proxy
