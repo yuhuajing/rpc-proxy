@@ -21,8 +21,8 @@ import (
 var requestsPerMinuteLimit int
 
 type ConfigData struct {
-	Port            string   `toml:",omitempty"`
-	URL             string   `toml:",omitempty"`
+	Port            string   `toml:",omitempty"` //监听的端口
+	URL             string   `toml:",omitempty"` //redirect url
 	WSURL           string   `toml:",omitempty"`
 	Allow           []string `toml:",omitempty"`
 	RPM             int      `toml:",omitempty"`
@@ -189,11 +189,11 @@ func (cfg *ConfigData) run(ctx context.Context) error {
 	r.Head("/", func(w http.ResponseWriter, _ *http.Request) {
 		w.WriteHeader(http.StatusOK)
 	})
-	r.Get("/x/{method}", server.Example)
-	r.Get("/x/{method}/{arg}", server.Example)
-	r.Get("/x/{method}/{arg}/{arg2}", server.Example)
-	r.Get("/x/{method}/{arg}/{arg2}/{arg3}", server.Example)
-	r.Head("/x/net_version", func(w http.ResponseWriter, r *http.Request) {
+	r.Get("/{method}", server.Example)
+	r.Get("/{method}/{arg}", server.Example)
+	r.Get("/{method}/{arg}/{arg2}", server.Example)
+	r.Get("/{method}/{arg}/{arg2}/{arg3}", server.Example)
+	r.Head("/net_version", func(w http.ResponseWriter, r *http.Request) {
 		_, err := server.example("net_version")
 		if err != nil {
 			gotils.L(ctx).Error().Printf("Failed to ping RPC: %v", err)

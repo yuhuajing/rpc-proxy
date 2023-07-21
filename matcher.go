@@ -4,7 +4,7 @@ import (
 	"regexp"
 )
 
-type matcher []*regexp.Regexp
+type matcher []*regexp.Regexp //正则匹配
 
 func (m matcher) MatchAnyRule(method string) bool {
 	if method == "" {

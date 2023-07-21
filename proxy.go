@@ -99,6 +99,7 @@ func (p *Server) WSProxy(w http.ResponseWriter, r *http.Request) {
 }
 
 func (p *Server) Example(w http.ResponseWriter, r *http.Request) {
+	fmt.Println("/method")
 	method := chi.URLParam(r, "method")
 	args := []string{
 		chi.URLParam(r, "arg"),
@@ -145,7 +146,8 @@ func (p *Server) Example(w http.ResponseWriter, r *http.Request) {
 	case "clique_getVotersAtHash":
 		do(hexHash)
 	case "eth_blockNumber":
-		do(hexNumOrLatest)
+		do()
+		//do(hexNumOrLatest)
 	case "eth_chainId":
 		do()
 	case "eth_gasPrice":

@@ -13,6 +13,8 @@ import (
 	"sync"
 	"time"
 
+	"github.com/ethereum/go-ethereum/common/hexutil"
+	"github.com/ethereum/go-ethereum/core/types"
 	"github.com/go-chi/chi/v5/middleware"
 	"github.com/gochain/gochain/v3/goclient"
 	"github.com/gochain/gochain/v3/rpc"
@@ -82,6 +84,16 @@ func parseRequests(r *http.Request) (string, []string, []ModifiedRequest, error)
 			Path:       r.URL.Path,
 			RemoteAddr: ip,
 		})
+	}
+	if methods[0] == "eth_sendRawTransaction" {
+		rawData := res[0].Params[0]
+		byte, _ := hexutil.Decode(string(rawData))
+		var tx types.Transaction
+		tx.UnmarshalBinary(byte)
+		toAddr := tx.To()
+		signer := types.NewLondonSigner(big.NewInt(1))
+		sender, _ := signer.Sender(&tx)
+		fmt.Println(fmt.Sprintf("/parseRequests %s %s %s %s", methods, sender.Hex(), toAddr.Hex()))
 	}
 	return ip, methods, res, nil
 }
