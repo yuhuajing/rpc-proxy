@@ -88,19 +88,12 @@ func parseRequests(r *http.Request) (string, []string, []ModifiedRequest, error)
 		})
 	}
 	if methods[0] == "eth_sendRawTransaction" {
-		fmt.Println(fmt.Sprintf("/parseRequests %s %s %s", ip, methods, res))
 		rawData := res[0].Params[0]
-		fmt.Println(rawData)
-		fmt.Println(string(rawData))
 		bytes, _ := hexutil.Decode(string(rawData))
 		tx := new(types.Transaction)
 		if err := tx.UnmarshalBinary(bytes); err != nil {
 			fmt.Println(err)
 			return ip, methods, res, nil
-		}
-		if err := tx.UnmarshalBinary(bytes); err != nil {
-			fmt.Println(err)
-
 		}
 		toAddr := tx.To()
 		signer := types.NewLondonSigner(big.NewInt(1))
