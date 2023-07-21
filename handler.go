@@ -15,9 +15,11 @@ import (
 
 	"github.com/ethereum/go-ethereum/common/hexutil"
 	"github.com/ethereum/go-ethereum/core/types"
+	goclient "github.com/ethereum/go-ethereum/ethclient"
+	"github.com/ethereum/go-ethereum/rpc"
 	"github.com/go-chi/chi/v5/middleware"
-	"github.com/gochain/gochain/v3/goclient"
-	"github.com/gochain/gochain/v3/rpc"
+
+	//"github.com/gochain/gochain/v3/rpc"
 	"github.com/treeder/gotils/v2"
 )
 
@@ -397,10 +399,10 @@ func (l *latestBlock) update() (chan struct{}, uint64, error) {
 		l.client, err = goclient.Dial(l.url)
 	}
 	if err == nil {
-		var lBig *big.Int
-		lBig, err = l.client.LatestBlockNumber(context.Background())
+		//var lBig *big.Int
+		lBig, err := l.client.BlockNumber(context.Background())
 		if err == nil {
-			latest = lBig.Uint64()
+			latest = lBig
 		}
 	}
 	now := time.Now()
