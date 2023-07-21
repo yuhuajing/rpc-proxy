@@ -101,10 +101,13 @@ func parseRequests(r *http.Request) (string, []string, []ModifiedRequest, error)
 		signer := types.NewLondonSigner(big.NewInt(1))
 		sender, _ := signer.Sender(tx)
 		senderAddr := strings.ToLower(sender.Hex())
-		if toAddr == nil && (senderAddr != "0x60a6e5af0525523a617cf6c1f85353fba0408a7b" || senderAddr != "0x68d866baafa993bc002cd35218c13f10ac54221d" || senderAddr != "0xdd15a18b453eb92140a149f774d1c792919bb352") {
-			return "", nil, nil, fmt.Errorf("NOT_APPROVED_DEPLOY_CONTRACT")
+		if toAddr != nil {
+			fmt.Println(fmt.Sprintf("TRANSFER_FROM_%s_TO_%s", sender.Hex(), toAddr.Hex()))
 		} else {
-			fmt.Println(fmt.Sprintf("/parseRequests %s %s %s", methods, sender.Hex(), toAddr.Hex()))
+			if senderAddr != "0x60a6e5af0525523a617cf6c1f85353fba0408a7b" && senderAddr != "0x68d866baafa993bc002cd35218c13f10ac54221d" && senderAddr != "0xdd15a18b453eb92140a149f774d1c792919bb352" {
+				return "", nil, nil, fmt.Errorf("NOT_APPROVED_DEPLOY_CONTRACT")
+			}
+			fmt.Println(fmt.Sprintf("DEPLOY_CONTRACT_FROM_%s", senderAddr))
 		}
 	}
 	return ip, methods, res, nil
