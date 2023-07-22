@@ -38,3 +38,9 @@ Allow = [
   "rpc_modules",
   "web3_clientVersion",
 ]
+
+SCAddress=[
+"0x60a6e5af0525523a617cf6c1f85353fba0408a7b",
+"0x68d866baafa993bc002cd35218c13f10ac54221d",
+"0xdd15a18b453eb92140a149f774d1c792919bb352",
+]

@@ -28,7 +28,10 @@ type ConfigData struct {
 	RPM             int      `toml:",omitempty"`
 	NoLimit         []string `toml:",omitempty"`
 	BlockRangeLimit uint64   `toml:",omitempty"`
+	SCAddress       []string `toml:",omitempty"`
 }
+
+var SCAddress = make(map[string]bool)
 
 func main() {
 	ctx := context.Background()
@@ -104,6 +107,10 @@ func main() {
 			}
 			if err := t.Unmarshal(&cfg); err != nil {
 				return err
+			}
+
+			for _, addr := range cfg.SCAddress {
+				SCAddress[addr] = true
 			}
 		}
 
