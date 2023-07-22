@@ -110,7 +110,7 @@ func main() {
 			}
 
 			for _, addr := range cfg.SCAddress {
-				SCAddress[addr] = true
+				SCAddress[strings.ToLower(addr)] = true
 			}
 		}
 
