@@ -58,7 +58,6 @@ func main() {
 		},
 		&cli.Uint64Flag{
 			Name:        "port, p",
-			Value:       0,
 			Usage:       "port to export to",
 			Destination: &port,
 		},
