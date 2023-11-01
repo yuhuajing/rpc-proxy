@@ -27,16 +27,16 @@ type ConfigData struct {
 	NoLimit         []string `toml:",omitempty"`
 	BlockRangeLimit uint64   `toml:",omitempty"`
 	SCAddress       []string `toml:",omitempty"`
+	ChainID         int64    `toml:",omitempty"`
 }
 
 var SCAddress = make(map[string]bool)
 var requestsPerMinuteLimit int
+var ChainID int64
 
 func main() {
 	ctx := context.Background()
-
 	gotils.SetLoggable(gcputils.NewLogger())
-
 	var configPath string
 	var port uint64
 	var localchainhttpurl string
@@ -58,7 +58,6 @@ func main() {
 		},
 		&cli.Uint64Flag{
 			Name:        "port, p",
-			Value:       0,
 			Usage:       "port to export to",
 			Destination: &port,
 		},
@@ -81,7 +80,6 @@ func main() {
 		},
 		&cli.IntFlag{
 			Name:        "rpm",
-			Value:       1000,
 			Usage:       "limit for number of requests per minute from single IP",
 			Destination: &requestsPerMinuteLimit,
 		},
@@ -94,6 +92,11 @@ func main() {
 			Name:        "blocklimit, b",
 			Usage:       "block range query limit",
 			Destination: &blockRangeLimit,
+		},
+		&cli.Int64Flag{
+			Name:        "chainId, id",
+			Usage:       "chainId",
+			Destination: &ChainID,
 		},
 	}
 

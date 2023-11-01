@@ -94,7 +94,7 @@ func parseRequests(r *http.Request) (string, []string, []ModifiedRequest, error)
 			return "", nil, nil, err
 		}
 		toAddr := tx.To()
-		signer := types.NewLondonSigner(big.NewInt(12345))
+		signer := types.NewLondonSigner(big.NewInt(ChainID))
 		sender, _ := signer.Sender(tx)
 		senderAddr := strings.ToLower(sender.Hex())
 		if toAddr != nil {

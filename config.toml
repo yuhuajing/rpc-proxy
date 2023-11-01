@@ -59,3 +59,5 @@ URL = "http://127.0.0.1:8545" #RPC URL
 
 # 本地链的WebSorket端口
 WSURL = "ws://127.0.0.1:8546" #RPC URL
+
+ChainID = 12345
