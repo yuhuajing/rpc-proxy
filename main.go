@@ -19,7 +19,7 @@ import (
 )
 
 type ConfigData struct {
-	Port            string   `toml:",omitempty"` //监听的端口
+	Port            uint64   `toml:",omitempty"` //监听的端口
 	URL             string   `toml:",omitempty"` //redirect url
 	WSURL           string   `toml:",omitempty"`
 	Allow           []string `toml:",omitempty"`
@@ -38,7 +38,7 @@ func main() {
 	gotils.SetLoggable(gcputils.NewLogger())
 
 	var configPath string
-	var port string
+	var port uint64
 	var localchainhttpurl string
 	var localchainwsurl string
 	var opendChainFunc string
@@ -56,9 +56,9 @@ func main() {
 			Usage:       "path to toml config file",
 			Destination: &configPath,
 		},
-		&cli.StringFlag{
+		&cli.Uint64Flag{
 			Name:        "port, p",
-			Value:       "8545",
+			Value:       8545,
 			Usage:       "port to export to",
 			Destination: &port,
 		},
@@ -114,7 +114,7 @@ func main() {
 			return errors.New("CONFIG_TOML_NEEDED")
 		}
 
-		if port != "" {
+		if port != 0 {
 			cfg.Port = port
 		}
 
@@ -190,5 +190,5 @@ func (cfg *ConfigData) run(ctx context.Context) error {
 	})
 	r.HandleFunc("/*", server.RPCProxy)
 	r.HandleFunc("/ws", server.WSProxy)
-	return http.ListenAndServe(":"+cfg.Port, r)
+	return http.ListenAndServe(":"+fmt.Sprint(cfg.Port), r)
 }
