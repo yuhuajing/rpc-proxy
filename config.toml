@@ -52,7 +52,7 @@ NoLimit = [] # ["192.168.101.75", "192.168.101.75"]
 BlockRangeLimit = 0
 
 # 对外开放的端口
-Port = 8545
+Port = 8540
 
 # 本地链的HTTP端口
 URL = "http://127.0.0.1:8545" #RPC URL
