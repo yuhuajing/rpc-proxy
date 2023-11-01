@@ -7,7 +7,7 @@ require (
 	github.com/btcsuite/btcd v0.22.0-beta // indirect
 	github.com/cpuguy83/go-md2man/v2 v2.0.2 // indirect
 	github.com/go-chi/chi/v5 v5.0.7
-	github.com/gochain/gochain/v3 v3.4.9
+	//github.com/gochain/gochain/v3 v3.4.9
 	github.com/gorilla/websocket v1.5.0
 	github.com/pelletier/go-toml v1.9.5
 	github.com/rs/cors v1.8.2

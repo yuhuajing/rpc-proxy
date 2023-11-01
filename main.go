@@ -171,21 +171,7 @@ func (cfg *ConfigData) run(ctx context.Context) error {
 		MaxAge:           3600,
 	}).Handler)
 
-	r.Get("/", server.HomePage)
 	r.Head("/", func(w http.ResponseWriter, _ *http.Request) {
-		w.WriteHeader(http.StatusOK)
-	})
-	r.Get("/{method}", server.Example)
-	r.Get("/{method}/{arg}", server.Example)
-	r.Get("/{method}/{arg}/{arg2}", server.Example)
-	r.Get("/{method}/{arg}/{arg2}/{arg3}", server.Example)
-	r.Head("/net_version", func(w http.ResponseWriter, r *http.Request) {
-		_, err := server.example("net_version")
-		if err != nil {
-			gotils.L(ctx).Error().Printf("Failed to ping RPC: %v", err)
-			w.WriteHeader(http.StatusInternalServerError)
-			return
-		}
 		w.WriteHeader(http.StatusOK)
 	})
 	r.HandleFunc("/*", server.RPCProxy)
