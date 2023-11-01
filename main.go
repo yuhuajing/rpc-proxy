@@ -171,7 +171,7 @@ func (cfg *ConfigData) run(ctx context.Context) error {
 		MaxAge:           3600,
 	}).Handler)
 
-	//r.Get("/", server.HomePage)
+	r.Get("/", server.HomePage)
 	r.Head("/", func(w http.ResponseWriter, _ *http.Request) {
 		w.WriteHeader(http.StatusOK)
 	})
