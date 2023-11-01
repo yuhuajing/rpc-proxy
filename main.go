@@ -80,7 +80,6 @@ func main() {
 		},
 		&cli.IntFlag{
 			Name:        "rpm",
-			Value:       1000,
 			Usage:       "limit for number of requests per minute from single IP",
 			Destination: &requestsPerMinuteLimit,
 		},
@@ -118,8 +117,8 @@ func main() {
 			return errors.New("CONFIG_TOML_NEEDED")
 		}
 
-		if port != 0 {
-			cfg.Port = port
+		if port == 0 {
+			port = cfg.Port
 		}
 
 		if localchainhttpurl != "" {
@@ -128,8 +127,8 @@ func main() {
 		if localchainwsurl != "" {
 			cfg.WSURL = localchainwsurl
 		}
-		if requestsPerMinuteLimit != 0 {
-			cfg.RPM = requestsPerMinuteLimit
+		if requestsPerMinuteLimit == 0 {
+			requestsPerMinuteLimit = cfg.RPM
 		}
 		if opendChainFunc != "" {
 			cfg.Allow = strings.Split(opendChainFunc, ",")
@@ -139,6 +138,9 @@ func main() {
 		}
 		if blockRangeLimit > 0 {
 			cfg.BlockRangeLimit = blockRangeLimit
+		}
+		if ChainID == 0 {
+			ChainID = cfg.ChainID
 		}
 		return cfg.run(ctx)
 	}
