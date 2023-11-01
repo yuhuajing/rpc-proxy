@@ -81,7 +81,7 @@ func main() {
 		},
 		&cli.IntFlag{
 			Name:        "rpm",
-			Value:       0,
+			Value:       1000,
 			Usage:       "limit for number of requests per minute from single IP",
 			Destination: &requestsPerMinuteLimit,
 		},
