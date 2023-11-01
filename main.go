@@ -58,6 +58,7 @@ func main() {
 		},
 		&cli.Uint64Flag{
 			Name:        "port, p",
+			Value:       0,
 			Usage:       "port to export to",
 			Destination: &port,
 		},
@@ -80,6 +81,7 @@ func main() {
 		},
 		&cli.IntFlag{
 			Name:        "rpm",
+			Value:       0,
 			Usage:       "limit for number of requests per minute from single IP",
 			Destination: &requestsPerMinuteLimit,
 		},
