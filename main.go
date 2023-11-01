@@ -18,8 +18,6 @@ import (
 	"github.com/urfave/cli/v2"
 )
 
-var requestsPerMinuteLimit int
-
 type ConfigData struct {
 	Port            string   `toml:",omitempty"` //监听的端口
 	URL             string   `toml:",omitempty"` //redirect url
@@ -32,6 +30,7 @@ type ConfigData struct {
 }
 
 var SCAddress = make(map[string]bool)
+var requestsPerMinuteLimit int
 
 func main() {
 	ctx := context.Background()
@@ -40,9 +39,9 @@ func main() {
 
 	var configPath string
 	var port string
-	var redirecturl string
-	var redirectWSUrl string
-	var allowedPaths string
+	var localchainhttpurl string
+	var localchainwsurl string
+	var opendChainFunc string
 	var noLimitIPs string
 	var blockRangeLimit uint64
 
@@ -60,25 +59,25 @@ func main() {
 		&cli.StringFlag{
 			Name:        "port, p",
 			Value:       "8545",
-			Usage:       "port to serve",
+			Usage:       "port to export to",
 			Destination: &port,
 		},
 		&cli.StringFlag{
 			Name:        "url, u",
-			Value:       "http://127.0.0.1:8040",
-			Usage:       "redirect url",
-			Destination: &redirecturl,
+			Value:       "http://127.0.0.1:8545",
+			Usage:       "local chain http url",
+			Destination: &localchainhttpurl,
 		},
 		&cli.StringFlag{
 			Name:        "wsurl, w",
-			Value:       "ws://127.0.0.1:8041",
-			Usage:       "redirect websocket url",
-			Destination: &redirectWSUrl,
+			Value:       "ws://127.0.0.1:8546",
+			Usage:       "local chain websocket url",
+			Destination: &localchainwsurl,
 		},
 		&cli.StringFlag{
-			Name:        "allow, a",
+			Name:        "allowedfunc, a",
 			Usage:       "comma separated list of allowed paths",
-			Destination: &allowedPaths,
+			Destination: &opendChainFunc,
 		},
 		&cli.IntFlag{
 			Name:        "rpm",
@@ -108,55 +107,35 @@ func main() {
 			if err := t.Unmarshal(&cfg); err != nil {
 				return err
 			}
-
 			for _, addr := range cfg.SCAddress {
 				SCAddress[strings.ToLower(addr)] = true
 			}
+		} else {
+			return errors.New("CONFIG_TOML_NEEDED")
 		}
 
 		if port != "" {
-			if cfg.Port != "" {
-				return errors.New("port set in two places")
-			}
 			cfg.Port = port
 		}
-		if redirecturl != "" {
-			if cfg.URL != "" {
-				return errors.New("url set in two places")
-			}
-			cfg.URL = redirecturl
+
+		if localchainhttpurl != "" {
+			cfg.URL = localchainhttpurl
 		}
-		if redirectWSUrl != "" {
-			if cfg.WSURL != "" {
-				return errors.New("ws url set in two places")
-			}
-			cfg.WSURL = redirectWSUrl
+		if localchainwsurl != "" {
+			cfg.WSURL = localchainwsurl
 		}
 		if requestsPerMinuteLimit != 0 {
-			if cfg.RPM != 0 {
-				return errors.New("rpm set in two places")
-			}
 			cfg.RPM = requestsPerMinuteLimit
 		}
-		if allowedPaths != "" {
-			if len(cfg.Allow) > 0 {
-				return errors.New("allow set in two places")
-			}
-			cfg.Allow = strings.Split(allowedPaths, ",")
+		if opendChainFunc != "" {
+			cfg.Allow = strings.Split(opendChainFunc, ",")
 		}
 		if noLimitIPs != "" {
-			if len(cfg.NoLimit) > 0 {
-				return errors.New("nolimit set in two places")
-			}
 			cfg.NoLimit = strings.Split(noLimitIPs, ",")
 		}
 		if blockRangeLimit > 0 {
-			if cfg.BlockRangeLimit > 0 {
-				return errors.New("block range limit set in two places")
-			}
 			cfg.BlockRangeLimit = blockRangeLimit
 		}
-
 		return cfg.run(ctx)
 	}
 
@@ -171,8 +150,8 @@ func (cfg *ConfigData) run(ctx context.Context) error {
 	sort.Strings(cfg.Allow)
 	sort.Strings(cfg.NoLimit)
 
-	gotils.L(ctx).Info().Println("Server starting, port:", cfg.Port, "redirectURL:", cfg.URL, "redirectWSURL:", cfg.WSURL,
-		"rpmLimit:", cfg.RPM, "exempt:", cfg.NoLimit, "allowed:", cfg.Allow)
+	gotils.L(ctx).Info().Println("Server starting, export port:", cfg.Port, "localchainhttpurl:", cfg.URL, "localchainwsurl:", cfg.WSURL,
+		"rpmLimit:", cfg.RPM, "whitelistIP:", cfg.NoLimit, "opendChainFuncs:", cfg.Allow)
 
 	// Create proxy server.
 	server, err := cfg.NewServer()
@@ -192,7 +171,7 @@ func (cfg *ConfigData) run(ctx context.Context) error {
 		MaxAge:           3600,
 	}).Handler)
 
-	r.Get("/", server.HomePage)
+	//r.Get("/", server.HomePage)
 	r.Head("/", func(w http.ResponseWriter, _ *http.Request) {
 		w.WriteHeader(http.StatusOK)
 	})

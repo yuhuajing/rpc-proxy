@@ -99,7 +99,7 @@ func (p *Server) WSProxy(w http.ResponseWriter, r *http.Request) {
 }
 
 func (p *Server) Example(w http.ResponseWriter, r *http.Request) {
-	fmt.Println("/method")
+	//fmt.Println("/method")
 	method := chi.URLParam(r, "method")
 	args := []string{
 		chi.URLParam(r, "arg"),
@@ -364,7 +364,7 @@ var homePageTmpl = template.Must(template.New("").Parse(`<!DOCTYPE html>
 	<body>
 		<h1>GoChain RPC Proxy</h1>
 
-		<p>This is an RPC endpoint for <a href="https://gochain.io" rel="nofollow">GoChain</a>. It provides access to a limited subset of services. Rate limits apply.</p>
+		<p>This is an RPC endpoint. It provides access to a limited subset of services. Rate limits apply.</p>
 
 		<h2>Rate Limit</h2>
 

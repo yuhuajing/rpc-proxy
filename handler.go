@@ -26,10 +26,8 @@ import (
 
 type myTransport struct {
 	blockRangeLimit uint64 // 0 means none
-
 	matcher
 	limiters
-
 	latestBlock
 }
 

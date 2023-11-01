@@ -1,24 +1,22 @@
 # This is an example configuration file.
+# 区块链开放的功能
 Allow = [
-  "clique_getSigners",
-  "clique_getSignersAtHash",
-  "clique_getSnapshot",
-  "clique_getSnapshotAtHash",
-  "clique_getVoters",
-  "clique_getVotersAtHash",
-  "eth_blockNumber",
-  "eth_call",
+  # "clique_getSigners",
+  # "clique_getSignersAtHash",
+  # "clique_getSnapshot",
+  # "clique_getSnapshotAtHash",
+  # "clique_getVoters",
+  # "clique_getVotersAtHash",
+  "eth_blockNumber", # "eth_call",
   "eth_chainId",
   "eth_estimateGas",
-  "eth_gasPrice",
-  "eth_genesisAlloc",
+  "eth_gasPrice", # "eth_genesisAlloc",
   "eth_getBalance",
   "eth_getBlockByHash",
   "eth_getBlockByNumber",
   "eth_getBlockTransactionCountByHash",
   "eth_getBlockTransactionCountByNumber",
-  "eth_getCode",
-  "eth_getFilterChanges",
+  "eth_getCode", # "eth_getFilterChanges",
   "eth_getLogs",
   "eth_getStorageAt",
   "eth_getTransactionByBlockHashAndIndex",
@@ -29,18 +27,35 @@ Allow = [
   "eth_newBlockFilter",
   "eth_newPendingTransactionFilter",
   "eth_sendRawTransaction",
-  "eth_subscribe",
-  "eth_totalSupply",
-  "eth_uninstallFilter",
+  "eth_subscribe", #"eth_totalSupply",
+  #"eth_uninstallFilter",
   "eth_unsubscribe",
   "net_listening",
-  "net_version",
-  "rpc_modules",
-  "web3_clientVersion",
+  "net_version", # "rpc_modules",
+  # "web3_clientVersion",
 ]
 
-SCAddress=[
-"0x60a6e5af0525523a617cf6c1f85353fba0408a7b",
-"0x68d866baafa993bc002cd35218c13f10ac54221d",
-"0xdd15a18b453eb92140a149f774d1c792919bb352",
+# 允许部署合约的Sender地址
+SCAddress = [
+  "0x60a6e5af0525523a617cf6c1f85353fba0408a7b",
+  "0x68d866baafa993bc002cd35218c13f10ac54221d",
+  "0xdd15a18b453eb92140a149f774d1c792919bb352",
 ]
+
+# 限制 IP 每分钟发送的RPC请求数
+RPM = 1000
+
+# 白名单IP，IP地址不受RPC请求数的限制
+NoLimit =[]# ["192.168.101.75", "192.168.101.75"]
+
+# 在订阅区块链上事件时，允许订阅的最大区块跨度，跨度越大，就需要消耗越多的计算、存储资源
+BlockRangeLimit = 0
+
+# 对外开放的端口
+Port = 8545
+
+# 本地链的HTTP端口
+URL = "http://127.0.0.1:8545" #RPC URL
+
+# 本地链的WebSorket端口
+WSURL = "ws://127.0.0.1:8546" #RPC URL
