@@ -88,6 +88,7 @@ func main() {
 		cfg.WSURL = localchainwsurl
 		chainid, _ := strconv.Atoi(ChainIDenv)
 		cfg.ChainID = int64(chainid)
+		cfg.RPM = 1000
 
 		return cfg.run(ctx)
 	}
