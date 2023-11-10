@@ -49,7 +49,7 @@ func main() {
 
 	opendChainFunc := os.Getenv("ALLOW_CMDS")
 	allowedscdeployer := os.Getenv("ALLOW_CONTRACTS_DEPLOYER")
-	//portenv := os.Getenv("EXPORT_PORT")
+	portenv := os.Getenv("EXPORT_PORT")
 	localchainhttpurl := os.Getenv("ETHEREUM_HTTP_URL")
 	localchainwsurl := os.Getenv("ETHETEUM_WS_URL")
 	ChainIDenv := os.Getenv("CHAIN_ID")
@@ -75,8 +75,8 @@ func main() {
 			fmt.Println(allowdCMDS)
 		}
 
-		// port, _ := strconv.Atoi(portenv)
-		// cfg.Port = uint64(port)
+		port, _ := strconv.Atoi(portenv)
+		cfg.Port = uint64(port)
 
 		if RPM == "" {
 			requestsPerMinuteLimit = 1000
@@ -100,8 +100,7 @@ func main() {
 func (cfg *ConfigData) run(ctx context.Context) error {
 	sort.Strings(cfg.Allow)
 	sort.Strings(cfg.NoLimit)
-	//"Server starting, export port:", cfg.Port,
-	gotils.L(ctx).Info().Println("localchainhttpurl:", cfg.URL, "localchainwsurl:", cfg.WSURL,
+	gotils.L(ctx).Info().Println("Server starting, export port:", cfg.Port, "localchainhttpurl:", cfg.URL, "localchainwsurl:", cfg.WSURL,
 		"rpmLimit:", cfg.RPM, "whitelistIP:", cfg.NoLimit, "opendChainFuncs:", cfg.Allow)
 
 	// Create proxy server.
@@ -126,7 +125,6 @@ func (cfg *ConfigData) run(ctx context.Context) error {
 	})
 	r.HandleFunc("/*", server.RPCProxy)
 	r.HandleFunc("/ws", server.WSProxy)
-	error := http.ListenAndServe(":3000", r)
-	return error
-	//return http.ListenAndServe(fmt.Sprintf(":%d", cfg.Port), r)
+
+	return http.ListenAndServe(fmt.Sprintf("0.0.0.0:%d", cfg.Port), r)
 }
