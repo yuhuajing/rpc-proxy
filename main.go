@@ -49,20 +49,18 @@ func main() {
 	// }
 
 	opendChainFunc := os.Getenv("ALLOW_CMDS")
-	fmt.Println(opendChainFunc)
 	allowedscdeployer := os.Getenv("ALLOW_CONTRACTS_DEPLOYER")
-	fmt.Println(allowedscdeployer)
 	portenv := os.Getenv("EXPORT_PORT")
-	fmt.Println(portenv)
 	localchainhttpurl := os.Getenv("ETHEREUM_HTTP_URL")
-	fmt.Println(localchainhttpurl)
 	localchainwsurl := os.Getenv("ETHETEUM_WS_URL")
-	fmt.Println(localchainwsurl)
 	ChainIDenv := os.Getenv("CHAIN_ID")
-	fmt.Println(ChainIDenv)
+	RPM := os.Getenv("RPM_SERVER")
 
 	app.Action = func(c *cli.Context) error {
 		var cfg ConfigData
+		if localchainhttpurl == "" || localchainwsurl == "" {
+			log.Fatal("Need to specify a local Ethereum network")
+		}
 
 		if allowedscdeployer != "" {
 			SCDeployers := strings.Split(allowedscdeployer, ",")
@@ -72,7 +70,6 @@ func main() {
 				SCAddress[strings.ToLower(addr)] = true
 			}
 		}
-
 		if opendChainFunc != "" {
 			allowdCMDS := strings.Split(opendChainFunc, ",")
 			cfg.Allow = allowdCMDS
@@ -81,16 +78,16 @@ func main() {
 
 		port, _ := strconv.Atoi(portenv)
 		cfg.Port = uint64(port)
-		if localchainhttpurl == "" || localchainwsurl == "" {
-			log.Fatal("Need to specify a local Ethereum network")
+
+		if RPM == "" {
+			requestsPerMinuteLimit = 1000
+		} else {
+			requestsPerMinuteLimit, _ = strconv.Atoi(RPM)
 		}
 		cfg.URL = localchainhttpurl
 		cfg.WSURL = localchainwsurl
 		chainid, _ := strconv.Atoi(ChainIDenv)
 		cfg.ChainID = int64(chainid)
-		requestsPerMinuteLimit = 1000
-		//cfg.BlockRangeLimit = 10
-
 		return cfg.run(ctx)
 	}
 
