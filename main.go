@@ -15,7 +15,6 @@ import (
 	"github.com/rs/cors"
 	"github.com/treeder/gcputils"
 	"github.com/treeder/gotils/v2"
-	"github.com/urfave/cli/v2"
 )
 
 type ConfigData struct {
@@ -38,9 +37,9 @@ func main() {
 	ctx := context.Background()
 	gotils.SetLoggable(gcputils.NewLogger())
 
-	app := cli.NewApp()
-	app.Name = "rpc-proxy"
-	app.Usage = "A proxy for web3 JSONRPC"
+	// app := cli.NewApp()
+	// app.Name = "rpc-proxy"
+	// app.Usage = "A proxy for web3 JSONRPC"
 
 	// err := godotenv.Load()
 	// if err != nil {
@@ -55,80 +54,81 @@ func main() {
 	ChainIDenv := os.Getenv("CHAIN_ID")
 	RPM := os.Getenv("RPM_SERVER")
 
-	app.Action = func(c *cli.Context) error {
-		var cfg ConfigData
-		if localchainhttpurl == "" || localchainwsurl == "" {
-			log.Fatal("Need to specify a local Ethereum network")
-		}
-
-		if allowedscdeployer != "" {
-			SCDeployers := strings.Split(allowedscdeployer, ",")
-			for _, addr := range SCDeployers {
-				fmt.Println(addr)
-
-				SCAddress[strings.ToLower(addr)] = true
-			}
-		}
-		if opendChainFunc != "" {
-			allowdCMDS := strings.Split(opendChainFunc, ",")
-			cfg.Allow = allowdCMDS
-			fmt.Println(allowdCMDS)
-		}
-
-		port, _ := strconv.Atoi(portenv)
-		cfg.Port = uint64(port)
-
-		if RPM == "" {
-			requestsPerMinuteLimit = 1000
-		} else {
-			requestsPerMinuteLimit, _ = strconv.Atoi(RPM)
-		}
-		cfg.URL = localchainhttpurl
-		cfg.WSURL = localchainwsurl
-		chainid, _ := strconv.Atoi(ChainIDenv)
-		cfg.ChainID = int64(chainid)
-		sort.Strings(cfg.Allow)
-		sort.Strings(cfg.NoLimit)
-		gotils.L(ctx).Info().Println("Server starting, export port:", cfg.Port, "localchainhttpurl:", cfg.URL, "localchainwsurl:", cfg.WSURL,
-			"rpmLimit:", cfg.RPM, "whitelistIP:", cfg.NoLimit, "opendChainFuncs:", cfg.Allow)
-
-		// Create proxy server.
-		server, err := cfg.NewServer()
-		if err != nil {
-			return fmt.Errorf("failed to start server: %s", err)
-		}
-
-		r := chi.NewRouter()
-		r.Use(middleware.RequestID)
-		r.Use(middleware.Recoverer)
-		r.Use(cors.New(cors.Options{
-			AllowedOrigins:   []string{"*"},
-			AllowedMethods:   []string{"HEAD", "GET", "POST", "PUT", "PATCH", "DELETE"},
-			AllowedHeaders:   []string{"*"},
-			AllowCredentials: false,
-			MaxAge:           3600,
-		}).Handler)
-
-		r.Head("/", func(w http.ResponseWriter, _ *http.Request) {
-			w.WriteHeader(http.StatusOK)
-		})
-		r.HandleFunc("/*", server.RPCProxy)
-		r.HandleFunc("/ws", server.WSProxy)
-		error := http.ListenAndServe("0.0.0.0:3000", r)
-		if err != nil {
-			fmt.Println(error)
-			gotils.L(ctx).Error().Printf("Fatal error: %v", err)
-			return error
-		}
-		return nil
-		//return cfg.run(ctx)
+	//app.Action = func(c *cli.Context) error {
+	var cfg ConfigData
+	if localchainhttpurl == "" || localchainwsurl == "" {
+		log.Fatal("Need to specify a local Ethereum network")
 	}
 
-	if err := app.Run(os.Args); err != nil {
+	if allowedscdeployer != "" {
+		SCDeployers := strings.Split(allowedscdeployer, ",")
+		for _, addr := range SCDeployers {
+			fmt.Println(addr)
+
+			SCAddress[strings.ToLower(addr)] = true
+		}
+	}
+	if opendChainFunc != "" {
+		allowdCMDS := strings.Split(opendChainFunc, ",")
+		cfg.Allow = allowdCMDS
+		fmt.Println(allowdCMDS)
+	}
+
+	port, _ := strconv.Atoi(portenv)
+	cfg.Port = uint64(port)
+
+	if RPM == "" {
+		requestsPerMinuteLimit = 1000
+	} else {
+		requestsPerMinuteLimit, _ = strconv.Atoi(RPM)
+	}
+	cfg.URL = localchainhttpurl
+	cfg.WSURL = localchainwsurl
+	chainid, _ := strconv.Atoi(ChainIDenv)
+	cfg.ChainID = int64(chainid)
+	sort.Strings(cfg.Allow)
+	sort.Strings(cfg.NoLimit)
+	gotils.L(ctx).Info().Println("Server starting, export port:", cfg.Port, "localchainhttpurl:", cfg.URL, "localchainwsurl:", cfg.WSURL,
+		"rpmLimit:", cfg.RPM, "whitelistIP:", cfg.NoLimit, "opendChainFuncs:", cfg.Allow)
+
+	// Create proxy server.
+	server, err := cfg.NewServer()
+	if err != nil {
+		fmt.Println(fmt.Errorf("failed to start server: %s", err))
+		return
+	}
+
+	r := chi.NewRouter()
+	r.Use(middleware.RequestID)
+	r.Use(middleware.Recoverer)
+	r.Use(cors.New(cors.Options{
+		AllowedOrigins:   []string{"*"},
+		AllowedMethods:   []string{"HEAD", "GET", "POST", "PUT", "PATCH", "DELETE"},
+		AllowedHeaders:   []string{"*"},
+		AllowCredentials: false,
+		MaxAge:           3600,
+	}).Handler)
+
+	r.Head("/", func(w http.ResponseWriter, _ *http.Request) {
+		w.WriteHeader(http.StatusOK)
+	})
+	r.HandleFunc("/*", server.RPCProxy)
+	//r.HandleFunc("/ws", server.WSProxy)
+	error := http.ListenAndServe("0.0.0.0:3000", r)
+	if err != nil {
+		fmt.Println(error)
 		gotils.L(ctx).Error().Printf("Fatal error: %v", err)
 		return
 	}
-	gotils.L(ctx).Info().Print("Shutting down")
+
+	//return cfg.run(ctx)
+	//}
+
+	// if err := app.Run(os.Args); err != nil {
+	// 	gotils.L(ctx).Error().Printf("Fatal error: %v", err)
+	// 	return
+	// }
+	//gotils.L(ctx).Info().Print("Shutting down")
 }
 
 // func (cfg *ConfigData) run(ctx context.Context) error {
