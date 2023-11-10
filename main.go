@@ -2,16 +2,16 @@ package main
 
 import (
 	"context"
-	"errors"
 	"fmt"
+	"log"
 	"net/http"
 	"os"
 	"sort"
+	"strconv"
 	"strings"
 
 	"github.com/go-chi/chi/v5"
 	"github.com/go-chi/chi/v5/middleware"
-	toml "github.com/pelletier/go-toml"
 	"github.com/rs/cors"
 	"github.com/treeder/gcputils"
 	"github.com/treeder/gotils/v2"
@@ -37,111 +37,58 @@ var ChainID int64
 func main() {
 	ctx := context.Background()
 	gotils.SetLoggable(gcputils.NewLogger())
-	var configPath string
-	var port uint64
-	var localchainhttpurl string
-	var localchainwsurl string
-	var opendChainFunc string
-	var noLimitIPs string
-	var blockRangeLimit uint64
 
 	app := cli.NewApp()
 	app.Name = "rpc-proxy"
 	app.Usage = "A proxy for web3 JSONRPC"
 	app.Version = Version
 
-	app.Flags = []cli.Flag{
-		&cli.StringFlag{
-			Name:        "config, c",
-			Usage:       "path to toml config file",
-			Destination: &configPath,
-		},
-		&cli.Uint64Flag{
-			Name:        "port, p",
-			Usage:       "port to export to",
-			Destination: &port,
-		},
-		&cli.StringFlag{
-			Name:        "url, u",
-			Value:       "http://127.0.0.1:8545",
-			Usage:       "local chain http url",
-			Destination: &localchainhttpurl,
-		},
-		&cli.StringFlag{
-			Name:        "wsurl, w",
-			Value:       "ws://127.0.0.1:8546",
-			Usage:       "local chain websocket url",
-			Destination: &localchainwsurl,
-		},
-		&cli.StringFlag{
-			Name:        "allowedfunc, a",
-			Usage:       "comma separated list of allowed paths",
-			Destination: &opendChainFunc,
-		},
-		&cli.IntFlag{
-			Name:        "rpm",
-			Usage:       "limit for number of requests per minute from single IP",
-			Destination: &requestsPerMinuteLimit,
-		},
-		&cli.StringFlag{
-			Name:        "nolimit, n",
-			Usage:       "list of ips allowed unlimited requests(separated by commas)",
-			Destination: &noLimitIPs,
-		},
-		&cli.Uint64Flag{
-			Name:        "blocklimit, b",
-			Usage:       "block range query limit",
-			Destination: &blockRangeLimit,
-		},
-		&cli.Int64Flag{
-			Name:        "chainId, id",
-			Usage:       "chainId",
-			Destination: &ChainID,
-		},
-	}
+	// err := godotenv.Load()
+	// if err != nil {
+	// 	log.Fatal("Error loading .env file")
+	// }
+
+	opendChainFunc := os.Getenv("ALLOW_CMDS")
+	fmt.Println(opendChainFunc)
+	allowedscdeployer := os.Getenv("ALLOW_CONTRACTS_DEPLOYER")
+	fmt.Println(allowedscdeployer)
+	portenv := os.Getenv("EXPORT_PORT")
+	fmt.Println(portenv)
+	localchainhttpurl := os.Getenv("ETHEREUM_HTTP_URL")
+	fmt.Println(localchainhttpurl)
+	localchainwsurl := os.Getenv("ETHETEUM_WS_URL")
+	fmt.Println(localchainwsurl)
+	ChainIDenv := os.Getenv("CHAIN_ID")
+	fmt.Println(ChainIDenv)
 
 	app.Action = func(c *cli.Context) error {
 		var cfg ConfigData
-		if configPath != "" {
-			t, err := toml.LoadFile(configPath)
-			if err != nil {
-				return err
-			}
-			if err := t.Unmarshal(&cfg); err != nil {
-				return err
-			}
-			for _, addr := range cfg.SCAddress {
+
+		if allowedscdeployer != "" {
+			SCDeployers := strings.Split(allowedscdeployer, ",")
+			for _, addr := range SCDeployers {
+				fmt.Println(addr)
+
 				SCAddress[strings.ToLower(addr)] = true
 			}
-		} else {
-			return errors.New("CONFIG_TOML_NEEDED")
 		}
 
-		if port == 0 {
-			port = cfg.Port
-		}
-
-		if localchainhttpurl != "" {
-			cfg.URL = localchainhttpurl
-		}
-		if localchainwsurl != "" {
-			cfg.WSURL = localchainwsurl
-		}
-		if requestsPerMinuteLimit == 0 {
-			requestsPerMinuteLimit = cfg.RPM
-		}
 		if opendChainFunc != "" {
-			cfg.Allow = strings.Split(opendChainFunc, ",")
+			allowdCMDS := strings.Split(opendChainFunc, ",")
+			cfg.Allow = allowdCMDS
+			fmt.Println(allowdCMDS)
 		}
-		if noLimitIPs != "" {
-			cfg.NoLimit = strings.Split(noLimitIPs, ",")
+
+		port, _ := strconv.Atoi(portenv)
+		cfg.Port = uint64(port)
+		if localchainhttpurl == "" || localchainwsurl == "" {
+			log.Fatal("Need to specify a local Ethereum network")
 		}
-		if blockRangeLimit > 0 {
-			cfg.BlockRangeLimit = blockRangeLimit
-		}
-		if ChainID == 0 {
-			ChainID = cfg.ChainID
-		}
+		cfg.URL = localchainhttpurl
+		cfg.WSURL = localchainwsurl
+		chainid, _ := strconv.Atoi(ChainIDenv)
+		cfg.ChainID = int64(chainid)
+
 		return cfg.run(ctx)
 	}
 
