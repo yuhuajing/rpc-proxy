@@ -11,7 +11,7 @@ COPY --link ./go.mod .
 COPY --link ./go.sum .
 RUN go mod download
 COPY --link . .
-RUN go build -ldflags "-s -w" -a -o rpc-proxy ./...
+RUN cd /build && go build -ldflags "-s -w" -a -o rpc-proxy ./...
 FROM alpine:latest AS final
 WORKDIR /app
 COPY --from=builder --link /etc/passwd /etc/passwd
