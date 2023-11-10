@@ -113,7 +113,7 @@ func main() {
 	})
 	r.HandleFunc("/*", server.RPCProxy)
 	//r.HandleFunc("/ws", server.WSProxy)
-	if err := http.ListenAndServe("0.0.0.0:3000", nil); err != nil {
+	if err := http.ListenAndServe("0.0.0.0:3000", r); err != nil {
 		panic(err)
 	}
 
