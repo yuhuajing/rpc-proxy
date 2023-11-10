@@ -4,15 +4,15 @@ services:
   chain-rpc:
     image: gochain/rpc-proxy:latest
     restart: always
-    #network_mode: host
-    ports:
-      - 8545:8540
+    network_mode: host
+    # ports: 
+    #   - 8545:8540
     stop_grace_period: 5m
     container_name: 'chain-rpc'
     environment:
       - ALLOW_CMDS=eth_blockNumber,eth_call,eth_chainId,eth_estimateGas,eth_gasPrice,eth_getBalance,eth_getBlockByHash,eth_getBlockByNumber,eth_getBlockTransactionCountByHash,eth_getBlockTransactionCountByNumber,eth_getCode,eth_getTransactionByBlockHashAndIndex,eth_getTransactionByBlockNumberAndIndex,eth_getTransactionByHash,eth_getTransactionCount,eth_getTransactionReceipt,eth_sendRawTransaction,net_listening,net_version
       - ALLOW_CONTRACTS_DEPLOYER=0x60a6e5af0525523a617cf6c1f85353fba0408a7b,0x68d866baafa993bc002cd35218c13f10ac54221d,0xdd15a18b453eb92140a149f774d1c792919bb352
-      - EXPORT_PORT=8540
+      - EXPORT_PORT=3000
       - ETHEREUM_HTTP_URL=http://127.0.0.1:8545
       - ETHETEUM_WS_URL=ws://127.0.0.1:8546
       - CHAIN_ID=12345
