@@ -89,6 +89,7 @@ func main() {
 		chainid, _ := strconv.Atoi(ChainIDenv)
 		cfg.ChainID = int64(chainid)
 		cfg.RPM = 1000
+		cfg.BlockRangeLimit = 10
 
 		return cfg.run(ctx)
 	}
