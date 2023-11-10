@@ -6,7 +6,6 @@ import (
 	"encoding/json"
 	"fmt"
 	"io/ioutil"
-	"math/big"
 	"net"
 	"net/http"
 	"strings"
@@ -96,7 +95,7 @@ func parseRequests(r *http.Request) (string, []string, []ModifiedRequest, error)
 			return "", nil, nil, err
 		}
 		toAddr := tx.To()
-		signer := types.NewLondonSigner(big.NewInt(1))
+		signer := types.LatestSignerForChainID(tx.ChainId())
 		sender, _ := signer.Sender(tx)
 		senderAddr := strings.ToLower(sender.Hex())
 		if toAddr != nil {
