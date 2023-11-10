@@ -41,7 +41,6 @@ func main() {
 	app := cli.NewApp()
 	app.Name = "rpc-proxy"
 	app.Usage = "A proxy for web3 JSONRPC"
-	app.Version = Version
 
 	// err := godotenv.Load()
 	// if err != nil {
