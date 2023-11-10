@@ -75,8 +75,8 @@ func main() {
 			fmt.Println(allowdCMDS)
 		}
 
-		port, _ := strconv.Atoi(portenv)
-		cfg.Port = uint64(port)
+		// port, _ := strconv.Atoi(portenv)
+		// cfg.Port = uint64(port)
 
 		if RPM == "" {
 			requestsPerMinuteLimit = 1000
@@ -100,8 +100,8 @@ func main() {
 func (cfg *ConfigData) run(ctx context.Context) error {
 	sort.Strings(cfg.Allow)
 	sort.Strings(cfg.NoLimit)
-
-	gotils.L(ctx).Info().Println("Server starting, export port:", cfg.Port, "localchainhttpurl:", cfg.URL, "localchainwsurl:", cfg.WSURL,
+	//"Server starting, export port:", cfg.Port,
+	gotils.L(ctx).Info().Println("localchainhttpurl:", cfg.URL, "localchainwsurl:", cfg.WSURL,
 		"rpmLimit:", cfg.RPM, "whitelistIP:", cfg.NoLimit, "opendChainFuncs:", cfg.Allow)
 
 	// Create proxy server.
