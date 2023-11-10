@@ -49,7 +49,7 @@ func main() {
 
 	opendChainFunc := os.Getenv("ALLOW_CMDS")
 	allowedscdeployer := os.Getenv("ALLOW_CONTRACTS_DEPLOYER")
-	portenv := os.Getenv("EXPORT_PORT")
+	//portenv := os.Getenv("EXPORT_PORT")
 	localchainhttpurl := os.Getenv("ETHEREUM_HTTP_URL")
 	localchainwsurl := os.Getenv("ETHETEUM_WS_URL")
 	ChainIDenv := os.Getenv("CHAIN_ID")
@@ -126,6 +126,7 @@ func (cfg *ConfigData) run(ctx context.Context) error {
 	})
 	r.HandleFunc("/*", server.RPCProxy)
 	r.HandleFunc("/ws", server.WSProxy)
-	return http.ListenAndServe(":3000", r)
+	error := http.ListenAndServe(":3000", r)
+	return error
 	//return http.ListenAndServe(fmt.Sprintf(":%d", cfg.Port), r)
 }
