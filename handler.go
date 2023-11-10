@@ -6,7 +6,6 @@ import (
 	"encoding/json"
 	"fmt"
 	"io/ioutil"
-	"math/big"
 	"net"
 	"net/http"
 	"strings"
@@ -17,6 +16,7 @@ import (
 	"github.com/ethereum/go-ethereum/common/hexutil"
 	"github.com/ethereum/go-ethereum/core/types"
 	goclient "github.com/ethereum/go-ethereum/ethclient"
+	"github.com/ethereum/go-ethereum/rlp"
 	"github.com/ethereum/go-ethereum/rpc"
 	"github.com/go-chi/chi/v5/middleware"
 
@@ -90,11 +90,14 @@ func parseRequests(r *http.Request) (string, []string, []ModifiedRequest, error)
 		rawData := res[0].Params[0]
 		bytes, _ := hexutil.Decode(strings.Trim(string(rawData), `"`))
 		tx := new(types.Transaction)
-		if err := tx.UnmarshalBinary(bytes); err != nil {
-			return "", nil, nil, err
-		}
+		rlp.DecodeBytes(bytes, &tx)
+		// if err := tx.UnmarshalBinary(bytes); err != nil {
+		// 	return "", nil, nil, err
+		// }
+
 		toAddr := tx.To()
-		signer := types.NewLondonSigner(big.NewInt(ChainID))
+
+		signer := types.NewEIP155Signer(tx.ChainId()) //types.NewLondonSigner(big.NewInt(ChainID))
 		sender, _ := signer.Sender(tx)
 		senderAddr := strings.ToLower(sender.Hex())
 		if toAddr != nil {
