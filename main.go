@@ -100,15 +100,10 @@ func main() {
 		w.WriteHeader(http.StatusOK)
 	})
 	r.HandleFunc("/*", server.RPCProxy)
-	r.HandleFunc("/zc", hello)
 	http.ListenAndServe("0.0.0.0:3000", r)
 	// if err := http.ListenAndServe("0.0.0.0:3000", r); err != nil {
 	// 	panic(err)
 	// }
 	gotils.L(ctx).Info().Println("Server starting, export port:", cfg.Port, "localchainhttpurl:", cfg.URL, "localchainwsurl:", cfg.WSURL,
 		"rpmLimit:", cfg.RPM, "whitelistIP:", cfg.NoLimit, "opendChainFuncs:", cfg.Allow)
-}
-
-func hello(w http.ResponseWriter, r *http.Request) {
-	fmt.Fprintf(w, "Hello Docker Form Golang!")
 }
