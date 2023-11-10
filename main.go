@@ -36,16 +36,6 @@ var ChainID int64
 func main() {
 	ctx := context.Background()
 	gotils.SetLoggable(gcputils.NewLogger())
-
-	// app := cli.NewApp()
-	// app.Name = "rpc-proxy"
-	// app.Usage = "A proxy for web3 JSONRPC"
-
-	// err := godotenv.Load()
-	// if err != nil {
-	// 	log.Fatal("Error loading .env file")
-	// }
-
 	opendChainFunc := os.Getenv("ALLOW_CMDS")
 	allowedscdeployer := os.Getenv("ALLOW_CONTRACTS_DEPLOYER")
 	portenv := os.Getenv("EXPORT_PORT")
@@ -88,8 +78,6 @@ func main() {
 	cfg.ChainID = int64(chainid)
 	sort.Strings(cfg.Allow)
 	sort.Strings(cfg.NoLimit)
-	gotils.L(ctx).Info().Println("Server starting, export port:", cfg.Port, "localchainhttpurl:", cfg.URL, "localchainwsurl:", cfg.WSURL,
-		"rpmLimit:", cfg.RPM, "whitelistIP:", cfg.NoLimit, "opendChainFuncs:", cfg.Allow)
 
 	// Create proxy server.
 	server, err := cfg.NewServer()
@@ -112,22 +100,9 @@ func main() {
 		w.WriteHeader(http.StatusOK)
 	})
 	r.HandleFunc("/*", server.RPCProxy)
-	//r.HandleFunc("/ws", server.WSProxy)
 	if err := http.ListenAndServe("0.0.0.0:3000", r); err != nil {
 		panic(err)
 	}
-
-	//return cfg.run(ctx)
-	//}
-
-	// if err := app.Run(os.Args); err != nil {
-	// 	gotils.L(ctx).Error().Printf("Fatal error: %v", err)
-	// 	return
-	// }
-	//gotils.L(ctx).Info().Print("Shutting down")
+	gotils.L(ctx).Info().Println("Server starting, export port:", cfg.Port, "localchainhttpurl:", cfg.URL, "localchainwsurl:", cfg.WSURL,
+		"rpmLimit:", cfg.RPM, "whitelistIP:", cfg.NoLimit, "opendChainFuncs:", cfg.Allow)
 }
-
-// func (cfg *ConfigData) run(ctx context.Context) error {
-
-// 	return error
-// }
