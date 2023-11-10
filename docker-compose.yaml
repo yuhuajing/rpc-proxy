@@ -2,7 +2,7 @@ version: '3.8'
 
 services:
   chain-rpc:
-    image: gitea.qianking.xyz:3443/clayyu/chainexploer:latest
+    image: gochain/rpc-proxy:latest
     restart: always
     stop_grace_period: 5m
     container_name: 'chain-rpc'
