@@ -1,22 +1,18 @@
-#syntax=docker/dockerfile:1.4
-FROM golang:alpine AS builder
-WORKDIR /build
-RUN adduser -u 10001 -D app-runner
-ENV GOPROXY=https://goproxy.cn,direct \
-    CGO_ENABLED=0 \
-    GOARCH=amd64 \
-    GOOS=linux \
-    GO111MODULE=on
-COPY --link ./go.mod .
-COPY --link ./go.sum .
+# Build GoChain in a stock Go builder container
+FROM golang:1.17-alpine as builder
+
+RUN apk --no-cache add build-base git mercurial gcc linux-headers
+ENV D=/rpc-proxy
+WORKDIR $D
+# cache dependencies
+ADD go.mod $D
+ADD go.sum $D
 RUN go mod download
-COPY --link . .
-RUN go build -ldflags "-s -w" -a -o api-service ./main.go
-FROM alpine:latest AS final
-WORKDIR /app
-COPY --from=builder --link /etc/passwd /etc/passwd
-COPY --from=builder --link /etc/ssl/certs/ca-certificates.crt /etc/ssl/certs/ca-certificates.crt
-COPY --from=builder --link /build/api-service /app/api-service
-USER app-runner
-EXPOSE 3000
-ENTRYPOINT ["/app/api-service"]
+# build
+ADD . $D
+RUN cd $D && go build && cp rpc-proxy /tmp
+
+# Pull all binaries into a second stage deploy alpine container
+FROM alpine:latest
+COPY --from=builder /tmp/rpc-proxy /usr/local/bin/
+ENTRYPOINT ["rpc-proxy"]
