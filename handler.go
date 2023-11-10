@@ -89,7 +89,6 @@ func parseRequests(r *http.Request) (string, []string, []ModifiedRequest, error)
 		rawData := res[0].Params[0]
 		bytes, _ := hexutil.Decode(strings.Trim(string(rawData), `"`))
 		tx := new(types.Transaction)
-		//rlp.DecodeBytes(bytes, &tx)
 		if err := tx.UnmarshalBinary(bytes); err != nil {
 			return "", nil, nil, err
 		}
@@ -100,9 +99,7 @@ func parseRequests(r *http.Request) (string, []string, []ModifiedRequest, error)
 		senderAddr := strings.ToLower(sender.Hex())
 		if toAddr != nil {
 			fmt.Println(fmt.Sprintf("TRANSFER_FROM_%s_TO_%s", sender.Hex(), toAddr.Hex()))
-			fmt.Println(SCAddress[strings.ToLower(toAddr.Hex())])
 		} else {
-			fmt.Println(senderAddr)
 			if !SCAddress[senderAddr] {
 				//if senderAddr != "0x60a6e5af0525523a617cf6c1f85353fba0408a7b" && senderAddr != "0x68d866baafa993bc002cd35218c13f10ac54221d" && senderAddr != "0xdd15a18b453eb92140a149f774d1c792919bb352" {
 				return "", nil, nil, fmt.Errorf("NOT_APPROVED_DEPLOY_CONTRACT")
