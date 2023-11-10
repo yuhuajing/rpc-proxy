@@ -97,7 +97,6 @@ func main() {
 		fmt.Println(fmt.Errorf("failed to start server: %s", err))
 		return
 	}
-
 	r := chi.NewRouter()
 	r.Use(middleware.RequestID)
 	r.Use(middleware.Recoverer)
@@ -114,11 +113,8 @@ func main() {
 	})
 	r.HandleFunc("/*", server.RPCProxy)
 	//r.HandleFunc("/ws", server.WSProxy)
-	error := http.ListenAndServe("0.0.0.0:3000", r)
-	if err != nil {
-		fmt.Println(error)
-		gotils.L(ctx).Error().Printf("Fatal error: %v", err)
-		return
+	if err := http.ListenAndServe("0.0.0.0:3000", nil); err != nil {
+		panic(err)
 	}
 
 	//return cfg.run(ctx)
