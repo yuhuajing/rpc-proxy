@@ -4,7 +4,7 @@ services:
   chain-rpc:
     image: gochain/rpc-proxy:latest
     restart: always
-    network_mode: host
+    network_mode: host 
     # ports: 
     #   - 8545:8540
     stop_grace_period: 5m
@@ -18,3 +18,4 @@ services:
       - CHAIN_ID=12345
     volumes:
       - ./logs/:/app/logs/
+      
