@@ -15,7 +15,7 @@ FROM alpine:latest AS final
 WORKDIR /app
 COPY --from=builder --link /etc/passwd /etc/passwd
 COPY --from=builder --link /etc/ssl/certs/ca-certificates.crt /etc/ssl/certs/ca-certificates.crt
-COPY --from=builder --link /build/api-service /app/api-service
+COPY --from=builder --link /rpc-proxy/api-service /app/api-service
 USER app-runner
 EXPOSE 3000
 ENTRYPOINT ["/app/api-service"]
