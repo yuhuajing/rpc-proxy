@@ -19,5 +19,5 @@ services:
       # - ETHETEUM_WS_URL=ws://172.21.87.231:8546
       - CHAIN_ID=12345
     volumes:
-      - ./logs/:/app/logs/
+      - ./.env:/app/.env
       

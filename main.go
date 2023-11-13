@@ -43,7 +43,7 @@ func main() {
 	app.Name = "rpc-proxy"
 	app.Usage = "A proxy for web3 JSONRPC"
 
-	err := godotenv.Load()
+	err := godotenv.Load("/app/.env", "./.env")
 	if err != nil {
 		log.Fatal("Error loading .env file")
 	}
