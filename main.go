@@ -59,9 +59,9 @@ func main() {
 	app.Action = func(c *cli.Context) error {
 		var cfg ConfigData
 		if localchainhttpurl == "" || localchainwsurl == "" {
-			cfg.URL = "http://127.0.0.1:8545"
-			cfg.WSURL = "ws://127.0.0.1:8546"
-			//log.Fatal("Need to specify a local Ethereum network")
+			//cfg.URL = "http://127.0.0.1:8545"
+			//cfg.WSURL = "ws://127.0.0.1:8546"
+			log.Fatal("Need to specify a local Ethereum network")
 		} else {
 			cfg.URL = localchainhttpurl
 			cfg.WSURL = localchainwsurl
