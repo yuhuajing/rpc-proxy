@@ -5,6 +5,9 @@ services:
     image: gochain/rpc-proxy:latest
     restart: always
     #network_mode: host 
+    network_mode: bridge
+    extra_hosts:
+      - "172.21.87.231"
     ports: 
       - 3000:3000
     stop_grace_period: 5m
