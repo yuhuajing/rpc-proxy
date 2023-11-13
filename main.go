@@ -126,5 +126,5 @@ func (cfg *ConfigData) run(ctx context.Context) error {
 	})
 	r.HandleFunc("/*", server.RPCProxy)
 	r.HandleFunc("/ws", server.WSProxy)
-	return http.ListenAndServe(":"+fmt.Sprint(cfg.Port), r)
+	return http.ListenAndServe("0.0.0.0:3000", r) //ListenAndServe(":"+fmt.Sprint(cfg.Port), r)
 }
