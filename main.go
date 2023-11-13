@@ -61,6 +61,7 @@ func main() {
 
 		if allowedscdeployer != "" {
 			cfg.SCAddress = strings.Split(allowedscdeployer, ",")
+			for _, addr := range cfg.SCAddress {
 				SCAddress[strings.ToLower(addr)] = true
 			}
 		}
