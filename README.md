@@ -52,3 +52,7 @@ services:
     volumes:
       - ./.env:/app/.env   
 ```
+
+查询区块测试：
+
+```curl -X POST --data '{"jsonrpc":"2.0","method":"eth_blockNumber","params":[],"id":1}' -H "Content-Type: application/json" http://localhost:3000```
