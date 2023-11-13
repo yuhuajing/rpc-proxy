@@ -2,7 +2,6 @@ package main
 
 import (
 	"context"
-	"errors"
 	"fmt"
 	"log"
 	"net/http"
@@ -45,13 +44,19 @@ func main() {
 	app.Usage = "A proxy for web3 JSONRPC"
 
 	var enverr error
-	_, err := os.Stat("/app/.env")
-	if err == nil {
+	file, err := os.Open("/app/.env")
+	if err != nil {
+		file.Close()
+		enverr = godotenv.Load()
+	} else {
+		file.Close()
 		enverr = godotenv.Load("/app/.env")
 	}
-	if errors.Is(err, os.ErrNotExist) {
-		enverr = godotenv.Load()
+
+	if enverr != nil {
+		log.Fatal("Error loading env file")
 	}
+
 	if enverr != nil {
 		log.Fatal("Error loading env file")
 	}
