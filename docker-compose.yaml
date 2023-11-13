@@ -4,12 +4,12 @@ services:
   chain-rpc:
     image: gochain/rpc-proxy:latest
     restart: always
-    network_mode: host 
+    //network_mode: host 
     # network_mode: bridge
     # extra_hosts:
     #   - "host-machine:172.21.87.231"
-    # ports:  
-    #   - 3000:3000
+    ports:  
+      - 3000:3000
     stop_grace_period: 5m
     container_name: 'chain-rpc'
     environment:
@@ -18,8 +18,8 @@ services:
       - EXPORT_PORT=3000
       # - ETHEREUM_HTTP_URL=http://123.60.164.200:8545
       # - ETHETEUM_WS_URL=ws://123.60.164.200:8546
-      - ETHEREUM_HTTP_URL=http://localhost:8545
-      - ETHETEUM_WS_URL=ws://localhost:8546
+      - ETHEREUM_HTTP_URL=http://host.docker.internal:8545
+      - ETHETEUM_WS_URL=ws://host.docker.internal:8546
       - CHAIN_ID=12345
     volumes:
       - ./logs/:/app/logs/
