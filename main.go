@@ -61,11 +61,8 @@ func main() {
 
 		if allowedscdeployer != "" {
 			cfg.SCAddress = strings.Split(allowedscdeployer, ",")
-			// SCDeployers := strings.Split(allowedscdeployer, ",")
-			// for _, addr := range SCDeployers {
-
-			// 	SCAddress[strings.ToLower(addr)] = true
-			// }
+				SCAddress[strings.ToLower(addr)] = true
+			}
 		}
 
 		cfg.URL = localchainhttpurl
