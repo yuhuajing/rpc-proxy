@@ -104,7 +104,6 @@ func (cfg *ConfigData) run(ctx context.Context) error {
 	gotils.L(ctx).Info().Println("Server starting, export port:", cfg.Port, "localchainhttpurl:", cfg.URL, "localchainwsurl:", cfg.WSURL,
 		"rpmLimit:", cfg.RPM, "whitelistIP:", cfg.NoLimit, "opendChainFuncs:", cfg.Allow)
 
-	// Create proxy server.
 	server, err := cfg.NewServer()
 	if err != nil {
 		return fmt.Errorf("failed to start server: %s", err)
@@ -126,5 +125,5 @@ func (cfg *ConfigData) run(ctx context.Context) error {
 	})
 	r.HandleFunc("/*", server.RPCProxy)
 	r.HandleFunc("/ws", server.WSProxy)
-	return http.ListenAndServe("0.0.0.0:3000", r) //ListenAndServe(":"+fmt.Sprint(cfg.Port), r)
+	return http.ListenAndServe("localhost:3000", r)
 }
