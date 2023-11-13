@@ -4,7 +4,9 @@ services:
   chain-rpc:
     image: gochain/rpc-proxy:latest
     restart: always
-    network_mode: host 
+    #network_mode: host 
+    ports: 
+      - 3000:3000
     stop_grace_period: 5m
     container_name: 'chain-rpc'
     environment:
