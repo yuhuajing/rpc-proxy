@@ -90,7 +90,7 @@ func (cfg *ConfigData) run(ctx context.Context) error {
 	sort.Strings(cfg.NoLimit)
 
 	gotils.L(ctx).Info().Println("Server starting, export port:", cfg.Port, "chainID", cfg.ChainID, "localchainhttpurl:", cfg.URL, "localchainwsurl:", cfg.WSURL,
-		"rpmLimit:", cfg.RPM, "whitelistIP:", cfg.NoLimit, "opendChainFuncs:", cfg.Allow)
+		"rpmLimit:", requestsPerMinuteLimit, "SCdeployer:", cfg.Allow, "opendChainFuncs:", cfg.Allow)
 
 	// Create proxy server.
 	server, err := cfg.NewServer()
