@@ -60,10 +60,12 @@ func main() {
 		var cfg ConfigData
 
 		if allowedscdeployer != "" {
-			SCDeployers := strings.Split(allowedscdeployer, ",")
-			for _, addr := range SCDeployers {
-				SCAddress[strings.ToLower(addr)] = true
-			}
+			cfg.SCAddress = strings.Split(allowedscdeployer, ",")
+			// SCDeployers := strings.Split(allowedscdeployer, ",")
+			// for _, addr := range SCDeployers {
+
+			// 	SCAddress[strings.ToLower(addr)] = true
+			// }
 		}
 
 		cfg.URL = localchainhttpurl
@@ -90,7 +92,7 @@ func (cfg *ConfigData) run(ctx context.Context) error {
 	sort.Strings(cfg.NoLimit)
 
 	gotils.L(ctx).Info().Println("Server starting, export port:", cfg.Port, "chainID", cfg.ChainID, "localchainhttpurl:", cfg.URL, "localchainwsurl:", cfg.WSURL,
-		"rpmLimit:", requestsPerMinuteLimit, "SCdeployer:", cfg.Allow, "opendChainFuncs:", cfg.Allow)
+		"rpmLimit:", requestsPerMinuteLimit, "SCdeployer:", cfg.SCAddress, "opendChainFuncs:", cfg.Allow)
 
 	// Create proxy server.
 	server, err := cfg.NewServer()
