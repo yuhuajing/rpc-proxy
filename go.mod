@@ -68,5 +68,3 @@ require (
 	google.golang.org/protobuf v1.30.0 // indirect
 	rsc.io/tmplfunc v0.0.3 // indirect
 )
-
-replace github.com/joho/godotenv => ./godotenv/godotenv
