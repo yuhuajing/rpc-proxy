@@ -58,14 +58,6 @@ func main() {
 
 	app.Action = func(c *cli.Context) error {
 		var cfg ConfigData
-		if localchainhttpurl == "" || localchainwsurl == "" {
-			//cfg.URL = "http://127.0.0.1:8545"
-			//cfg.WSURL = "ws://127.0.0.1:8546"
-			log.Fatal("Need to specify a local Ethereum network")
-		} else {
-			cfg.URL = localchainhttpurl
-			cfg.WSURL = localchainwsurl
-		}
 
 		if allowedscdeployer != "" {
 			SCDeployers := strings.Split(allowedscdeployer, ",")
@@ -74,33 +66,15 @@ func main() {
 			}
 		}
 
-		if opendChainFunc != "" {
-			allowdCMDS := strings.Split(opendChainFunc, ",")
-			cfg.Allow = allowdCMDS
-		} else {
-			cfg.Allow = strings.Split("eth_blockNumber,eth_call,eth_chainId,eth_estimateGas,eth_gasPrice,eth_getBalance,eth_getBlockByHash,eth_getBlockByNumber,eth_getBlockTransactionCountByHash,eth_getBlockTransactionCountByNumber,eth_getCode,eth_getTransactionByBlockHashAndIndex,eth_getTransactionByBlockNumberAndIndex,eth_getTransactionByHash,eth_getTransactionCount,eth_getTransactionReceipt,eth_sendRawTransaction,net_listening,net_version", ",")
-		}
-
-		if portenv == "" {
-			cfg.Port = 3000
-		} else {
-			port, _ := strconv.Atoi(portenv)
-			cfg.Port = uint64(port)
-		}
-
-		if RPM == "" {
-			requestsPerMinuteLimit = 1000
-		} else {
-			requestsPerMinuteLimit, _ = strconv.Atoi(RPM)
-		}
-
-		if ChainIDenv == "" {
-			cfg.ChainID = 515
-		} else {
-			chainid, _ := strconv.Atoi(ChainIDenv)
-			cfg.ChainID = int64(chainid)
-		}
-
+		cfg.URL = localchainhttpurl
+		cfg.WSURL = localchainwsurl
+		allowdCMDS := strings.Split(opendChainFunc, ",")
+		cfg.Allow = allowdCMDS
+		port, _ := strconv.Atoi(portenv)
+		cfg.Port = uint64(port)
+		requestsPerMinuteLimit, _ = strconv.Atoi(RPM)
+		chainid, _ := strconv.Atoi(ChainIDenv)
+		cfg.ChainID = int64(chainid)
 		return cfg.run(ctx)
 	}
 
