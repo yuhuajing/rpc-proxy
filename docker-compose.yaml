@@ -18,8 +18,8 @@ services:
       - EXPORT_PORT=3000
       # - ETHEREUM_HTTP_URL=http://123.60.164.200:8545
       # - ETHETEUM_WS_URL=ws://123.60.164.200:8546
-      - ETHEREUM_HTTP_URL=http://172.21.87.231:8545
-      - ETHETEUM_WS_URL=ws://172.21.87.231:8546
+      - ETHEREUM_HTTP_URL=http://localhost:8545
+      - ETHETEUM_WS_URL=ws://localhost:8546
       - CHAIN_ID=12345
     volumes:
       - ./logs/:/app/logs/
