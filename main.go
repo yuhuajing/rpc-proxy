@@ -3,6 +3,7 @@ package main
 import (
 	"context"
 	"fmt"
+	"log"
 	"net/http"
 	"os"
 	"sort"
@@ -11,6 +12,7 @@ import (
 
 	"github.com/go-chi/chi/v5"
 	"github.com/go-chi/chi/v5/middleware"
+	"github.com/joho/godotenv"
 	"github.com/rs/cors"
 	"github.com/treeder/gcputils"
 	"github.com/treeder/gotils/v2"
@@ -41,10 +43,10 @@ func main() {
 	app.Name = "rpc-proxy"
 	app.Usage = "A proxy for web3 JSONRPC"
 
-	// err := godotenv.Load()
-	// if err != nil {
-	// 	log.Fatal("Error loading .env file")
-	// }
+	err := godotenv.Load()
+	if err != nil {
+		log.Fatal("Error loading .env file")
+	}
 
 	opendChainFunc := os.Getenv("ALLOW_CMDS")
 	allowedscdeployer := os.Getenv("ALLOW_CONTRACTS_DEPLOYER")
