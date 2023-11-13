@@ -4,7 +4,7 @@ services:
   chain-rpc:
     image: gochain/rpc-proxy:latest
     restart: always
-    //network_mode: host 
+    #network_mode: host 
     # network_mode: bridge
     # extra_hosts:
     #   - "host-machine:172.21.87.231"
