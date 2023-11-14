@@ -46,12 +46,14 @@ version: '3.8'
 services:
   chain-rpc:
     image: gochain/rpc-proxy:latest
-    ports:  
-      - 3000:3000
+    network_mode: host
     container_name: 'chain-rpc'
     volumes:
       - ./.env:/app/.env   
 ```
+
+1. 在 linux环境下在，启动docker 容器后内部自动监听 EXPORT_PORT 端口， 同时 Host network 也可以共享主机端口，访问本地的Chain端口
+2. 在 Windows WSL 环境下，docker 容器无法自动监听内部端口，需要ports暴露端口，同时 也无法访问本地端口，只能访问 NetworkIP:port
 
 查询区块测试：
 

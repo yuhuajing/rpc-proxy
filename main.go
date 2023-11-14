@@ -47,7 +47,7 @@ func main() {
 	file, err := os.Open("/app/.env")
 	if err != nil {
 		file.Close()
-		enverr = godotenv.Overload()
+		enverr = godotenv.Overload() //Load
 	} else {
 		file.Close()
 		enverr = godotenv.Overload("/app/.env")
